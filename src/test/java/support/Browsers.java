@@ -10,6 +10,11 @@ import org.testng.Assert;
 
 public class Browsers {
     private WebDriver driver = null;
+    /*
+    * Function: open browser
+    * Param: type of browser (chrome, firefox.)
+    * Return: Webdriver
+    */
     public void open(String browser){
         switch (browser) {
             case "chrome" -> {
@@ -33,6 +38,16 @@ public class Browsers {
     }
     public void errorChecking(String expected){
         Assert.assertTrue(find(How.ID, "flash").getText().contains(expected));
+    }
+    public void check(WebElement checkbox){
+        if (!checkbox.isSelected()){
+            checkbox.click();
+        }
+    }
+    public void unCheck(WebElement checkbox){
+        if (checkbox.isSelected()){
+            checkbox.click();
+        }
     }
     public void close(){
         driver.quit();

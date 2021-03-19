@@ -6,29 +6,33 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.How;
+import org.testng.Assert;
 
 public class Browsers {
-    private WebDriver driver;
+    private WebDriver driver = null;
     public void open(String browser){
-        switch (browser){
-            case "chrome":
-                System.setProperty("webdriver.chrome.driver","drivers/chromedriver.exe");
+        switch (browser) {
+            case "chrome" -> {
+                System.setProperty("webdriver.chrome.driver", "drivers/chromedriver.exe");
                 driver = new ChromeDriver();
-                break;
-            case "firefox":
-                System.setProperty("webdriver.gecko.driver","drivers/geckodriver.exe");
+            }
+            case "firefox" -> {
+                System.setProperty("webdriver.gecko.driver", "drivers/geckodriver.exe");
                 driver = new FirefoxDriver();
-                break;
+            }
         }
     }
     public void redirectTo(String url){
         driver.get(url);
     }
-    public WebElement find(String how,String locator){
-        switch (how)
-        case "xpath":
-        WebElement element = driver.findElement(By.xpath(locator));
-        return element;
+    public WebElement find(How type,String locator){
+        return driver.findElement(type.buildBy(locator));
+    }
+    public void resultByUrl(String expected){
+        Assert.assertTrue(driver.getCurrentUrl().contains(expected));
+    }
+    public void errorChecking(String expected){
+        Assert.assertTrue(find(How.ID, "flash").getText().contains(expected));
     }
     public void close(){
         driver.quit();

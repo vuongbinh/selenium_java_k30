@@ -12,7 +12,7 @@ public class LoginTest {
     //Step 1: open browser
     browser.open("firefox");
     //Step 2: Redicect to:https://the-internet.herokuapp.com/login
-    browser.redirectTo("https://the-internet.herokuapp.com/login");
+    browser.navigateTo("https://the-internet.herokuapp.com/login");
     //Step 3: Fill in username with tomsmith
     browser.find(How.ID,"username").sendKeys("tomsmith");
     //Step 4: Fill in the password with SuperSecretPassword!
@@ -20,7 +20,7 @@ public class LoginTest {
     //Step 5: Click on Login button
     browser.find(How.XPATH,"//button[@type='submit']").click();
     //Step 6: Verify that login is succeed
-    browser.resultByUrl("/secure");
+    browser.validate("/secure","url");
     //Step 7: Quit
     browser.close();
     }
@@ -30,7 +30,7 @@ public class LoginTest {
         //Step 1: open browser
         browser.open("firefox");
         //Step 2: Redicect to:https://the-internet.herokuapp.com/login
-        browser.redirectTo("https://the-internet.herokuapp.com/login");
+        browser.navigateTo("https://the-internet.herokuapp.com/login");
         //Step 3: Fill in username with tomsmith
         browser.find(How.ID,"username").sendKeys("tomsmith1");
         //Step 4: Fill in the password with SuperSecretPassword!
@@ -38,7 +38,7 @@ public class LoginTest {
         //Step 5: Click on Login button
         browser.find(How.XPATH,"//button[@type='submit']").click();
         //Step 6: Verify that login is succeed
-        browser.errorChecking("Your username is invalid!");
+        browser.errorChecking("Your username is invalid!","flash");
         browser.close();
     }
 }

@@ -10,11 +10,9 @@ import org.testng.Assert;
 
 public class Browsers {
     private WebDriver driver = null;
-    /*
-    * Function: open browser
-    * Param: type of browser (chrome, firefox.)
-    * Return: Webdriver
-    */
+    public WebDriver browser(){
+        return driver;
+    }
     public void open(String browser){
         switch (browser) {
             case "chrome" -> {
@@ -27,17 +25,26 @@ public class Browsers {
             }
         }
     }
-    public void redirectTo(String url){
+    public void navigateTo(String url){
         driver.get(url);
     }
     public WebElement find(How type,String locator){
         return driver.findElement(type.buildBy(locator));
     }
-    public void resultByUrl(String expected){
-        Assert.assertTrue(driver.getCurrentUrl().contains(expected));
+    public void validate(String expected, String type){
+        switch (type){
+            case "url":
+                Assert.assertTrue(driver.getCurrentUrl().contains(expected));
+            case "title":
+                Assert.assertTrue(driver.getTitle().contains(expected));
+            case "linktext":
+                driver.findElement(By.linkText(expected)).click();
+                Assert.assertTrue(driver.getCurrentUrl().contains(String.format("status_codes/%s",expected)));
+        }
+
     }
-    public void errorChecking(String expected){
-        Assert.assertTrue(find(How.ID, "flash").getText().contains(expected));
+    public void errorChecking(String expected, String errorCode){
+        Assert.assertTrue(find(How.ID, errorCode).getText().contains(expected));
     }
     public void check(WebElement checkbox){
         if (!checkbox.isSelected()){
@@ -49,6 +56,9 @@ public class Browsers {
             checkbox.click();
         }
     }
+
+
+
     public void close(){
         driver.quit();
     }

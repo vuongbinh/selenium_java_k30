@@ -13,7 +13,7 @@ public class CheckboxTest {
         //1.Open browser
         browsers.open("chrome");
         //2. Navigate to https://the-internet.herokuapp.com/checkboxes
-        browsers.redirectTo("https://the-internet.herokuapp.com/checkboxes");
+        browsers.navigateTo("https://the-internet.herokuapp.com/checkboxes");
         //3. Check on “checkbox1"
         WebElement checkbox1 = browsers.find(How.XPATH,"//form[@id='checkboxes']//input[1]");
         browsers.check(checkbox1);
@@ -32,7 +32,7 @@ public class CheckboxTest {
         //1.Open browser
         browsers.open("firefox");
         //2. Navigate to https://the-internet.herokuapp.com/checkboxes
-        browsers.redirectTo("https://the-internet.herokuapp.com/checkboxes");
+        browsers.navigateTo("https://the-internet.herokuapp.com/checkboxes");
         //3. Check on “checkbox1"
         WebElement checkbox1 = browsers.find(How.XPATH,"//form[@id='checkboxes']//input[1]");
         browsers.check(checkbox1);

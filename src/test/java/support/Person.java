@@ -15,6 +15,9 @@ public class Person {
         this.website = website;
     }
 
+    public Person() {
+    }
+
     public String getFullName(){
         return String.format("%s %s",firstName,lastName);
     }

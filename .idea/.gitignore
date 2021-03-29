@@ -25,5 +25,8 @@ hs_err_pid*
 # Libraries
 *.xml
 
+# File report
+*.html
+
 # Execution file
 *.exe

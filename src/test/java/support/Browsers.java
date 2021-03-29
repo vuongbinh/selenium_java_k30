@@ -8,6 +8,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.How;
 import org.testng.Assert;
 
+import java.util.List;
+
 public class Browsers {
     private WebDriver driver = null;
     public WebDriver browser(){
@@ -31,6 +33,14 @@ public class Browsers {
     public WebElement find(How type,String locator){
         return driver.findElement(type.buildBy(locator));
     }
+    public List<WebElement> findMultiple(How type, String locator){
+        return driver.findElements(type.buildBy(locator));
+    }
+
+    public WebDriver getText() {
+        return driver;
+    }
+
     public void validate(String expected, String type){
         switch (type){
             case "url":

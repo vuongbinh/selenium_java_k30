@@ -1,17 +1,12 @@
 package modules;
 
 import org.openqa.selenium.support.How;
+import org.testng.Assert;
 import org.testng.annotations.*;
+import pages.HyperLinkPage;
 import support.Browsers;
 
-public class HyperlinkTest {
-    Browsers browsers = new Browsers();
-    @BeforeMethod
-    void setup(){
-        //1.Open browser
-        browsers.open("chrome");
-        browsers.navigateTo("https://the-internet.herokuapp.com/status_codes");
-    }
+public class HyperlinkTest extends BaseTest{
 
     @DataProvider
     static Object[][] pages(){
@@ -23,14 +18,13 @@ public class HyperlinkTest {
         };
     }
     @Test(dataProvider = "pages")
-    void navigateToPage(String name){
-        browsers.validate(name,"linktext");
-        browsers.find(How.LINK_TEXT,"here").click();
+    void navigateToPage(String errorCode){
+        HyperLinkPage hyperLinkPage = new HyperLinkPage(driver);
+        hyperLinkPage.open();
+
+        hyperLinkPage.click(errorCode);
+
+        Assert.assertTrue(hyperLinkPage.getResult(errorCode));
     }
 
-
-    @AfterMethod
-    void tearDown(){
-        browsers.close();
-    }
 }

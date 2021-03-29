@@ -1,84 +1,66 @@
 package modules;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import pages.JsAlertPage;
 
-public class JsAlertTest {
-    private static WebDriver driver;
-    @BeforeMethod
-    void setup() {
-        System.setProperty("webdriver.chrome.driver", "drivers/chromedriver.exe");
-        driver = new ChromeDriver();
-        driver.get("https://the-internet.herokuapp.com/javascript_alerts");
+public class JsAlertTest extends BaseTest {
+
+    @Test
+    void clickForJsAlert() {
+        JsAlertPage jsAlertPage = new JsAlertPage(driver);
+        jsAlertPage.open();
+        jsAlertPage.triggerAlert();
+        WebDriverWait wait = new WebDriverWait(driver, 5);
+        Assert.assertNotNull(wait.until(ExpectedConditions.alertIsPresent()));
+        jsAlertPage.accept();
+        Assert.assertTrue(jsAlertPage.getResult("result")
+                .contains("You successfully clicked an alert"));
     }
+
     @DataProvider
-    static Object[][] confirmAction(){
+    static Object[][] Actions() {
         return new Object[][]{
                 new Object[]{"Cancel"},
                 new Object[]{"Ok"}
         };
     }
-    @Test
-    void clickForJsAlert(){
-        driver.findElement(By.xpath("//button[.='Click for JS Alert']")).click();
-
-        WebDriverWait wait = new WebDriverWait(driver,10);
+    @Test(dataProvider = "Actions")
+    void clickForJsConfirmOK(String action) {
+        JsAlertPage jsAlertPage = new JsAlertPage(driver);
+        jsAlertPage.open();
+        jsAlertPage.triggerConfirm(action);
+        WebDriverWait wait = new WebDriverWait(driver, 5);
         Assert.assertNotNull(wait.until(ExpectedConditions.alertIsPresent()));
-
-        driver.switchTo().alert().accept();
-
-        String result = driver.findElement(By.xpath("//*[@id='result']")).getText();
-        Assert.assertEquals(result,"You successfully clicked an alert");
-    }
-    @Test(dataProvider = "confirmAction")
-    void clickForJsConfirmOK(String action){
-        driver.findElement(By.xpath("//button[.='Click for JS Confirm']")).click();
-
-        WebDriverWait wait = new WebDriverWait(driver,10);
-        Assert.assertNotNull(wait.until(ExpectedConditions.alertIsPresent()));
-
-        if (action.contains("Cancel")){
-            driver.switchTo().alert().dismiss();
-        }else {
-            driver.switchTo().alert().accept();
+        if (action.contains("Cancel")) {
+            jsAlertPage.dismiss();
+        } else {
+            jsAlertPage.accept();
         }
-
-        String result = driver.findElement(By.id("result")).getText();
-        Assert.assertEquals(result, "You clicked: %s".formatted(action));
-
+        Assert.assertEquals(jsAlertPage.getResult("result")
+                ,"You clicked: %s".formatted(action));
     }
 
-    @DataProvider Object[][] textData(){
-            return new Object[][]{
-                new Object[]{"Hello"},
-                new Object[]{"Cancel"}
-            };
+    @DataProvider
+    Object[][] textData() {
+        return new Object[][]{
+                new Object[]{"Hello!"},
+                new Object[]{"I need your help."},
+                new Object[]{"Could you find me?"},
+                new Object[]{"Could you help me please!"},
+        };
     }
     @Test(dataProvider = "textData")
-    void clickForJsPromt(String text){
-        driver.findElement(By.xpath("//button[.='Click for JS Prompt']")).click();
-
-        WebDriverWait wait = new WebDriverWait(driver,10);
+    void clickForJsPrompt(String text) {
+        JsAlertPage jsAlertPage = new JsAlertPage(driver);
+        jsAlertPage.open();
+        jsAlertPage.triggerPrompt(text);
+        WebDriverWait wait = new WebDriverWait(driver, 5);
         Assert.assertNotNull(wait.until(ExpectedConditions.alertIsPresent()));
-
-        driver.switchTo().alert().sendKeys(text);
-        driver.switchTo().alert().accept();
-
-        String result = driver.findElement(By.xpath("//*[@id='result']")).getText();
-        Assert.assertEquals(result,"You entered: %s".formatted(text));
-    }
-
-    @AfterMethod
-    void tearDown(){
-        driver.quit();
+        jsAlertPage.accept();
+        Assert.assertEquals(jsAlertPage.getResult("result"), "You entered: %s".formatted(text));
     }
 }

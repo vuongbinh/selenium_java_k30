@@ -1,24 +1,11 @@
 package modules;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import pages.DropdownPage;
 
-public class DropdownTest {
-    static WebDriver driver;
-    @BeforeMethod
-    void setup() {
-        System.setProperty("webdriver.chrome.driver", "drivers/chromedriver.exe");
-        driver = new ChromeDriver();
-        driver.get("https://the-internet.herokuapp.com/dropdown");
-
-    }
+public class DropdownTest extends BaseTest{
     @DataProvider Object[][] dropdownData(){
         return new Object[][]{
                 new Object[]{"Option 1", "2"},
@@ -26,19 +13,13 @@ public class DropdownTest {
         };
     }
     @Test(dataProvider = "dropdownData")
-    static void validateDropdownOpt1(String optdata,String index){
-        Select opt = new Select(driver.findElement(By.id("dropdown")));
-        opt.selectByVisibleText(optdata);
-        Assert.assertTrue(driver.findElement(By.xpath("//*[@id='dropdown']/Option[%s]".formatted(index))).isSelected());
+    static void validateDropdown(String option, String index){
+        DropdownPage dropdownPage = new DropdownPage(driver);
+        dropdownPage.open();
+        dropdownPage.select(option);
+
+        Assert.assertEquals(dropdownPage.getResult(index),option);
+
     }
 
-    @AfterMethod
-    void tearDown(){
-        try{
-            Thread.sleep(1000);
-        }catch (InterruptedException ie) {
-            ie.printStackTrace();
-        }
-        driver.close();
-    }
 }

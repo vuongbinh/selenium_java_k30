@@ -1,74 +1,50 @@
 package modules;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import pages.TablePage;
 import support.Person;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
-public class WebTableTest {
-    static WebDriver driver;
-    static List<Person> persons;
+public class WebTableTest extends BaseTest{
 
-    @BeforeMethod
-    void setup() {
-        System.setProperty("webdriver.chrome.driver", "drivers/chromedriver.exe");
-        driver = new ChromeDriver();
-        driver.get("https://the-internet.herokuapp.com/tables");
-        List<WebElement> rows = driver.findElements(By.xpath("//table[@id='table1']/tbody/tr"));
-        persons = rows
-                .stream()
-                .map(WebTableTest::toPerson)
-                .collect(Collectors.toList());
-    }
     @DataProvider Object[][] dataMaxDue(){
         return new Object[][]{
-                new Object[]{"Jason Doe"},
-                new Object[]{"Frank Bach"}
+                new Object[]{"Jason Doe",true},
+                new Object[]{"Frank Bach",false},
+                new Object[]{"John Smith",false},
+                new Object[]{"Tim Conway",false}
         };
     }
     @Test(dataProvider = "dataMaxDue")
-    void personWhohasMaxDue(String perName){
-        float maxDue = persons.stream()
-                .max(Comparator.comparing(Person::getDue))
-                .orElseThrow(NoSuchElementException::new).getDue();
-        boolean result = persons.stream()
-                .filter(person -> person.getDue()==maxDue)
-                .anyMatch(person -> person.getFullName().contains(perName));
-        Assert.assertTrue(result);
+    void personWhohasMaxDue(String perName, boolean expected){
+        TablePage tablePage = new TablePage(driver);
+        tablePage.open();
+        float maxDue = tablePage.getMaxDue();
+
+        Assert.assertEquals(tablePage.getResult(perName,maxDue),expected);
     }
     @DataProvider Object[][] dataMinDue(){
         return new Object[][]{
-                new Object[]{"John Smith"},
-                new Object[]{"Tim Conway"}
+                new Object[]{"Jason Doe",false},
+                new Object[]{"Frank Bach",false},
+                new Object[]{"John Smith",true},
+                new Object[]{"Tim Conway",true}
         };
     }
     @Test(dataProvider = "dataMinDue")
-    void personWhohasMinDue(String perName){
-        float minDue = persons.stream()
-                .min(Comparator.comparing(Person::getDue))
-                .orElseThrow(NoSuchElementException::new).getDue();
-        boolean result = persons.stream()
-                .filter(person -> person.getDue()==minDue)
-                .anyMatch(person -> person.getFullName().contains(perName));
-        Assert.assertTrue(result);
+    void personWhohasMinDue(String perName, boolean expected){
+        TablePage tablePage = new TablePage(driver);
+        tablePage.open();
+        float minDue = tablePage.getMinDue();
+        Assert.assertEquals(tablePage.getResult(perName,minDue),expected);
     }
 
-    @AfterMethod
-    void tearDown(){
-        driver.quit();
-    }
-    static Person toPerson(WebElement row){
+    public static Person toPerson(WebElement row){
         List<WebElement> cells = row.findElements(By.tagName("td"));
         String lastName = cells.get(0).getText();
         String firstName = cells.get(1).getText();

@@ -1,44 +1,24 @@
 package modules;
 
-import org.openqa.selenium.support.How;
+import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import support.Browsers;
+import pages.LoginPage;
 
 
-public class LoginTest {
-@Test
-    void validateLogin(){
-    Browsers browser = new Browsers();
-    //Step 1: open browser
-    browser.open("firefox");
-    //Step 2: Redicect to:https://the-internet.herokuapp.com/login
-    browser.navigateTo("https://the-internet.herokuapp.com/login");
-    //Step 3: Fill in username with tomsmith
-    browser.find(How.ID,"username").sendKeys("tomsmith");
-    //Step 4: Fill in the password with SuperSecretPassword!
-    browser.find(How.ID,"password").sendKeys("SuperSecretPassword!");
-    //Step 5: Click on Login button
-    browser.find(How.XPATH,"//button[@type='submit']").click();
-    //Step 6: Verify that login is succeed
-    browser.validate("/secure","url");
-    //Step 7: Quit
-    browser.close();
+public class LoginTest extends BaseTest{
+    @DataProvider
+    Object [][] credentials(){
+        return new Object[][]{
+                new Object[]{"tomsmith","SuperSecretPassword!","/secure"},
+                new Object[]{"Tomsmith","SuperSecretPassword@","/login"},
+        };
     }
-@Test
-    void validateLoginFailed(){
-        Browsers browser = new Browsers();
-        //Step 1: open browser
-        browser.open("firefox");
-        //Step 2: Redicect to:https://the-internet.herokuapp.com/login
-        browser.navigateTo("https://the-internet.herokuapp.com/login");
-        //Step 3: Fill in username with tomsmith
-        browser.find(How.ID,"username").sendKeys("tomsmith1");
-        //Step 4: Fill in the password with SuperSecretPassword!
-        browser.find(How.ID,"password").sendKeys("SuperSecretPassword!");
-        //Step 5: Click on Login button
-        browser.find(How.XPATH,"//button[@type='submit']").click();
-        //Step 6: Verify that login is succeed
-        browser.errorChecking("Your username is invalid!","flash");
-        browser.close();
+    @Test(dataProvider = "credentials")
+    void validateLogin(String usr,String pwd, String expectedUrl) {
+    LoginPage loginPage = new LoginPage(driver);
+    loginPage.open();
+    loginPage.login(usr,pwd);
+    Assert.assertTrue(loginPage.getCurrentURL().contains(expectedUrl));
     }
 }

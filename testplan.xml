@@ -1,0 +1,7 @@
+<suite name="Smoke Test">
+    <test name="TestNG">
+        <classes>
+            <class name="modules.BmiTest"/>
+        </classes>
+    </test>
+</suite>

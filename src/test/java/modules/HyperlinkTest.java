@@ -1,10 +1,9 @@
 package modules;
 
-import org.openqa.selenium.support.How;
 import org.testng.Assert;
-import org.testng.annotations.*;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 import pages.HyperLinkPage;
-import support.Browsers;
 
 public class HyperlinkTest extends BaseTest{
 

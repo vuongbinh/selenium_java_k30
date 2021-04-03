@@ -23,6 +23,6 @@ public class DropdownPage extends BasePage {
     }
 
     public String getResult(String index){
-        return driver.findElement(By.xpath("//*[@id='dropdown']/Option[%s]".formatted(index))).getText();
+        return driver.findElement(By.xpath(String.format("//*[@id='dropdown']/Option[%s]",index))).getText();
     }
 }

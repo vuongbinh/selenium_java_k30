@@ -41,7 +41,7 @@ public class JsAlertTest extends BaseTest {
             jsAlertPage.accept();
         }
         Assert.assertEquals(jsAlertPage.getResult("result")
-                ,"You clicked: %s".formatted(action));
+                ,String.format("You clicked: %s",action));
     }
 
     @DataProvider
@@ -61,6 +61,6 @@ public class JsAlertTest extends BaseTest {
         WebDriverWait wait = new WebDriverWait(driver, 5);
         Assert.assertNotNull(wait.until(ExpectedConditions.alertIsPresent()));
         jsAlertPage.accept();
-        Assert.assertEquals(jsAlertPage.getResult("result"), "You entered: %s".formatted(text));
+        Assert.assertEquals(jsAlertPage.getResult("result"), String.format("You entered: %s",text));
     }
 }

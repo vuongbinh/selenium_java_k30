@@ -21,9 +21,10 @@ jobs:
       with:
         java-version: 1.8
     - name: Build with Maven
-<<<<<<< HEAD
       run: mvn -B package --file pom.xml
-=======
-      run: mvn -B package 
-    
->>>>>>> 51e4d3fc0e686bdc3fec2d000b729567f1da761f
+    - name: Publish Test Report
+        uses: scacap/action-surefire-report@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/surefire-reports/
+
